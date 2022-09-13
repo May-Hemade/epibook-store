@@ -1,8 +1,8 @@
 import React, { Component } from "react"
 import { Button } from "react-bootstrap"
 
-export class CommentList extends Component {
-  deleteComment = async (comment) => {
+const CommentList = (props) => {
+  const deleteComment = async (comment) => {
     try {
       const response = await fetch(
         `https://striveschool-api.herokuapp.com/api/comments/${comment._id}`,
@@ -25,26 +25,24 @@ export class CommentList extends Component {
     }
   }
 
-  render() {
-    return (
-      <div>
-        <ul>
-          {this.props.comments.map((comment) => (
-            <li key={comment._id}>
-              {comment.comment}
-              <Button
-                variant="danger"
-                className="m-2"
-                onClick={() => this.deleteComment(comment)}
-              >
-                X
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )
-  }
+  return (
+    <div>
+      <ul>
+        {props.comments.map((comment) => (
+          <li key={comment._id}>
+            {comment.comment}
+            <Button
+              variant="danger"
+              className="m-2"
+              onClick={() => deleteComment(comment)}
+            >
+              X
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
 }
 
 export default CommentList

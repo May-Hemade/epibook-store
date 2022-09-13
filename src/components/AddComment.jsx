@@ -1,14 +1,18 @@
 import React, { Component } from "react"
+import { useState } from "react"
 import { Button, FormControl, InputGroup } from "react-bootstrap"
 
-export class AddComment extends Component {
-  state = { comment: "", rate: "3" }
+const AddComment = (props) => {
+  const [comment, setComment] = useState("")
+  const [rate, setRate] = useState("3")
 
-  postComment = async () => {
-    const comment = {
-      comment: this.state.comment,
-      rate: this.state.rate,
-      elementId: this.props.asin,
+  const postComment = async () => {
+    console.log(props.asin)
+
+    const commentBody = {
+      comment: comment,
+      rate: rate,
+      elementId: props.asin,
     }
 
     try {
@@ -21,12 +25,12 @@ export class AddComment extends Component {
             Authorization:
               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzE5YjkwZmEyM2M4MzAwMTUzNjhmMjkiLCJpYXQiOjE2NjI2MzAxNjAsImV4cCI6MTY2MzgzOTc2MH0.6MP3FosMk2dFLz2iISr9FtSNa_eEt4btSsOnpo8dUk4",
           },
-          body: JSON.stringify(comment),
+          body: JSON.stringify(commentBody),
         }
       )
       if (response.ok) {
         let commnets = await response.json()
-        this.props.refreshComments()
+        props.refreshComments()
         console.log(commnets)
       } else {
         console.log("Couldn't submit comment")
@@ -35,21 +39,20 @@ export class AddComment extends Component {
       console.log(error)
     }
   }
-  render() {
-    return (
-      <div>
-        <InputGroup className="mb-3">
-          <FormControl
-            placeholder="Comment.."
-            aria-label="comment"
-            onChange={(event) => this.setState({ comment: event.target.value })}
-          />
 
-          <Button onClick={() => this.postComment()}>ADD</Button>
-        </InputGroup>
-      </div>
-    )
-  }
+  return (
+    <div>
+      <InputGroup className="mb-3">
+        <FormControl
+          placeholder="Comment.."
+          aria-label="comment"
+          onChange={(event) => setComment(event.target.value)}
+        />
+
+        <Button onClick={() => postComment()}>ADD</Button>
+      </InputGroup>
+    </div>
+  )
 }
 
 export default AddComment

@@ -1,16 +1,17 @@
 import React, { Component } from "react"
+import { useEffect } from "react"
+import { useState } from "react"
 import AddComment from "./AddComment"
 import CommentList from "./CommentList"
-import Loading from "./Loading"
 
-export class CommentArea extends Component {
-  state = { comments: [] }
+const CommentArea = (props) => {
+  const [comments, setComments] = useState([])
 
-  getComments = async () => {
-    this.props.loadingOn()
+  const getComments = async () => {
+    props.setLoading(true)
     try {
       const responese = await fetch(
-        `https://striveschool-api.herokuapp.com/api/comments/${this.props.asin}`,
+        `https://striveschool-api.herokuapp.com/api/comments/${props.asin}`,
         {
           headers: {
             Authorization:
@@ -18,10 +19,10 @@ export class CommentArea extends Component {
           },
         }
       )
-      this.props.loadingOff()
+      props.setLoading(false)
       if (responese.ok) {
         let comments = await responese.json()
-        this.setState({ comments: comments })
+        setComments(comments)
 
         console.log(comments)
       } else {
@@ -32,26 +33,17 @@ export class CommentArea extends Component {
     }
   }
 
-  componentDidMount() {
-    this.getComments()
-  }
-  componentDidUpdate(prevProps) {
-    if (this.props.asin !== prevProps.asin) {
-      this.getComments()
-    }
-  }
+  useEffect(() => {
+    console.log("componentDidUpdate")
+    getComments()
+  }, [props.asin])
 
-  render() {
-    return (
-      <div>
-        <AddComment
-          asin={this.props.asin}
-          refreshComments={this.getComments}
-        ></AddComment>
-        <CommentList comments={this.state.comments}></CommentList>
-      </div>
-    )
-  }
+  return (
+    <div>
+      <AddComment asin={props.asin} refreshComments={getComments}></AddComment>
+      <CommentList comments={comments}></CommentList>
+    </div>
+  )
 }
 
 export default CommentArea

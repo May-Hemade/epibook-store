@@ -1,5 +1,4 @@
-import logo from "./logo.svg"
-import React, { Component } from "react"
+import React, { useState } from "react"
 import "./App.css"
 import MyNavBar from "./components/MyNavBar"
 import MyFooter from "./components/MyFooter"
@@ -11,73 +10,48 @@ import books from "./data/romance.json"
 import Loading from "./components/Loading"
 import { Col, Container, Row, Spinner } from "react-bootstrap"
 import CommentArea from "./components/CommentArea"
+const App = () => {
+  const [loading, setLoading] = useState(false)
+  const [error, seterror] = useState(false)
+  const [selectedAsin, setSelectedAsin] = useState(undefined)
 
-export class App extends Component {
-  state = { loading: false, error: false, selectedAsin: undefined }
+  //  const loadingOff = () => {
+  //     setLoading(false)
+  //   }
 
-  setAsin = (asin) => {
-    this.setState({
-      ...this.state,
-      selectedAsin: asin,
-    })
-  }
+  return (
+    <div className="App">
+      {loading && <Loading />}
 
-  loadingOn = () => {
-    this.setState({
-      ...this.state,
-      loading: true,
-    })
-  }
+      <MyAlert variant="warning" text="warning"></MyAlert>
+      <MyNavBar></MyNavBar>
+      <Welcome
+        title="EpiShop Open Now"
+        description="Hello to our land of books where reading is Epic"
+      ></Welcome>
 
-  loadingOff = () => {
-    this.setState({ ...this.state, loading: false })
-  }
-
-  errorOn = () => {
-    this.setState({ error: true })
-  }
-
-  errorOff = () => {
-    this.setState({ error: false })
-  }
-
-  render() {
-    return (
-      <div className="App">
-        {this.state.loading && <Loading />}
-
-        <MyAlert variant="warning" text="warning"></MyAlert>
-        <MyNavBar></MyNavBar>
-        <Welcome
-          title="EpiShop Open Now"
-          description="Hello to our land of books where reading is Epic"
-        ></Welcome>
-
-        <Container>
-          <Row>
-            <Col md={8}>
-              <AllBooks
-                books={books}
-                loadingOn={this.loadingOn}
-                loadingOff={this.loadingOff}
-                setAsin={this.setAsin}
-              ></AllBooks>
-            </Col>
-            <Col>
-              {this.state.selectedAsin && (
-                <CommentArea
-                  asin={this.state.selectedAsin}
-                  loadingOn={this.loadingOn}
-                  loadingOff={this.loadingOff}
-                ></CommentArea>
-              )}
-            </Col>
-          </Row>
-        </Container>
-        <MyFooter></MyFooter>
-      </div>
-    )
-  }
+      <Container>
+        <Row>
+          <Col md={8}>
+            <AllBooks
+              books={books}
+              setLoading={setLoading}
+              setAsin={setSelectedAsin}
+            ></AllBooks>
+          </Col>
+          <Col>
+            {selectedAsin && (
+              <CommentArea
+                asin={selectedAsin}
+                setLoading={setLoading}
+              ></CommentArea>
+            )}
+          </Col>
+        </Row>
+      </Container>
+      <MyFooter></MyFooter>
+    </div>
+  )
 }
 
 export default App
