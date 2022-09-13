@@ -6,10 +6,8 @@ import { Container } from "react-bootstrap"
 import SingleBook from "./SingleBook"
 
 class AllBooks extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { query: "" }
-  }
+  state = { query: "" }
+
   updateInputValue(event) {
     const newQuery = event.target.value
 
@@ -41,7 +39,12 @@ class AllBooks extends Component {
               })
               .map((book) => (
                 <Col key={book.asin}>
-                  <SingleBook book={book}></SingleBook>
+                  <SingleBook
+                    book={book}
+                    loadingOn={this.props.loadingOn}
+                    loadingOff={this.props.loadingOff}
+                    setAsin={this.props.setAsin}
+                  ></SingleBook>
                 </Col>
               ))}
           </Row>
